@@ -9,7 +9,7 @@ class AdminLogin extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "Admin Login",
-          stjyle: TextStyle(fontSize: 33, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 33, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
