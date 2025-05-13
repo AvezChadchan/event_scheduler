@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:event_scheduler/screens/admin_dashboard.dart';
+// import 'package:event_scheduler/screens/admin_dashboard.dart';
 
 class AdminLogin extends StatefulWidget {
   @override
