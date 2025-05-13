@@ -3,7 +3,7 @@ import 'package:event_scheduler/data/local/db_helper.dart';
 class EventModel {
   final int? id;
   final String title;
-  final String? description;
+  final String description;
   final String date;
   final String time;
   final String organizer;
@@ -12,7 +12,7 @@ class EventModel {
   EventModel({
     this.id,
     required this.title,
-    this.description,
+    required this.description,
     required this.date,
     required this.time,
     required this.organizer,

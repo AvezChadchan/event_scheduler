@@ -428,7 +428,7 @@ class DBHelper {
       final db = await getDB();
       final result = await db.rawQuery(
         '''
-        SELECT p.*`
+        SELECT p.*
         FROM $TABLE_NAME_2 p
         INNER JOIN $TABLE_NAME_3 a ON p.$COLUMN_ID_2 = a.$COLUMN_PARTICIPANT_ID_3
         WHERE a.$COLUMN_EVENT_ID_3 = ?
@@ -442,4 +442,10 @@ class DBHelper {
       return [];
     }
   }
+  Future<void> closeDB() async {
+    final db = await getDB();
+    await db.close();
+    myDB = null;
+  }
+
 }
