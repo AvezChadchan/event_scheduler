@@ -1,4 +1,6 @@
+import 'package:event_scheduler/models/attendance_model.dart';
 import 'package:event_scheduler/models/event_model.dart';
+import 'package:event_scheduler/models/participant_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -224,14 +226,15 @@ class DBHelper {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getParticipantsByEvent(int eventID) async {
+  Future<List<ParticipantModel>> getParticipantsByEvent(int eventID) async {
     try {
       final db = await getDB();
-      final participants = db.query(
+      final maps = await db.query(
         TABLE_NAME_2,
         where: "$COLUMN_EVENT_ID_2=?",
         whereArgs: [eventID],
       );
+      final participants=maps.map((map)=>ParticipantModel.fromMap(map)).toList();
       print("Participants for event $eventID: $participants");
       return participants;
     } catch (e) {
@@ -240,14 +243,15 @@ class DBHelper {
     }
   }
 
-  Future<Map<String, dynamic>?> getParticipantById(int id) async {
+  Future<ParticipantModel?> getParticipantById(int id) async {
     try {
       final db = await getDB();
-      final participants = await db.query(
+      final map = await db.query(
         TABLE_NAME_2,
         where: '$COLUMN_ID_2 = ?',
         whereArgs: [id],
       );
+      final participants=map.map((map)=>ParticipantModel.fromMap(map)).toList();
       final participant = participants.isNotEmpty ? participants.first : null;
       print("Participant by ID: $participant");
       return participant;
@@ -320,15 +324,17 @@ class DBHelper {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getAttendanceByEvent(int eventId) async {
+  Future<List<AttendanceModel>> getAttendanceByEvent(int eventId) async {
     try {
       final db = await getDB();
-      final attendance = await db.query(
+      final map = await db.query(
         TABLE_NAME_3,
         where: '$COLUMN_EVENT_ID_3 = ?',
         whereArgs: [eventId],
       );
+      final attendance = map.map((map) => AttendanceModel.fromMap(map)).toList();
       print("Attendance for event $eventId: $attendance");
+
       return attendance;
     } catch (e) {
       print("Error fetching attendance: $e");
@@ -336,14 +342,15 @@ class DBHelper {
     }
   }
 
-  Future<Map<String, dynamic>?> getAttendanceById(int id) async {
+  Future<AttendanceModel?> getAttendanceById(int id) async {
     try {
       final db = await getDB();
-      final attendance = await db.query(
+      final map = await db.query(
         TABLE_NAME_3,
         where: '$COLUMN_ID_3 = ?',
         whereArgs: [id],
       );
+      final attendance = map.map((map) => AttendanceModel.fromMap(map)).toList();
       final record = attendance.isNotEmpty ? attendance.first : null;
       print("Attendance by ID: $record");
       return record;
@@ -406,7 +413,7 @@ class DBHelper {
       final result = await db.query(
         TABLE_NAME_1,
         where:
-            '$COLUMN_DATE_1 = ? AND $COLUMN_TIME_1 = ? AND $COLUMN_LOCATION_1 = ?',
+        '$COLUMN_DATE_1 = ? AND $COLUMN_TIME_1 = ? AND $COLUMN_LOCATION_1 = ?',
         whereArgs: [date, time, location],
       );
       return result.isNotEmpty;
@@ -421,7 +428,7 @@ class DBHelper {
       final db = await getDB();
       final result = await db.rawQuery(
         '''
-        SELECT p.*
+        SELECT p.*`
         FROM $TABLE_NAME_2 p
         INNER JOIN $TABLE_NAME_3 a ON p.$COLUMN_ID_2 = a.$COLUMN_PARTICIPANT_ID_3
         WHERE a.$COLUMN_EVENT_ID_3 = ?
