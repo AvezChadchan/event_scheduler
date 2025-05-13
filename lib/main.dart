@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'theme/app_theme.dart';
-import 'screens/home_screen.dart';
+import 'package:event_scheduler/Login/mainlogin.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'College Event Scheduler',
       // theme: AppTheme.lightTheme,
-      home:  HomeScreen(),
+      home:  MainLogin(),
       debugShowCheckedModeBanner: false,
     );
   }
