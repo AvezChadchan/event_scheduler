@@ -1,7 +1,7 @@
 import 'package:event_scheduler/data/local/db_helper.dart';
 import 'package:event_scheduler/models/event_model.dart';
 import 'package:event_scheduler/screens/event_detail.dart';
-import 'package:event_scheduler/widgets/event_card.dart';
+import 'package:event_scheduler/widgets/eventcard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
