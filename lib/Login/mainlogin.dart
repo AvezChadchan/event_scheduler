@@ -20,7 +20,7 @@ class MainLogin extends StatelessWidget {
           ElevatedButton(
             child: Text("Login as Admin"),
             onPressed:
-                () => Navigator.pushReplacement(
+                () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => AdminLogin()),
                 ),
@@ -28,7 +28,7 @@ class MainLogin extends StatelessWidget {
           ElevatedButton(
             child: Text("Login as User"),
             onPressed:
-                () => Navigator.pushReplacement(
+                () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => UserLogin()),
                 ),
