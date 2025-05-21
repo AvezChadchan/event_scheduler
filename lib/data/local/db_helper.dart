@@ -25,6 +25,7 @@ class DBHelper {
   static const String COLUMN_ID_2 = "id";
   static const String COLUMN_NAME_2 = "name";
   static const String COLUMN_EVENT_ID_2 = "event_id";
+  static const String COLUMN_GROUP="group_name";
   static const String COLUMN_EMAIL_2 = "email";
 
   // Table and column names for attendance
@@ -67,6 +68,7 @@ class DBHelper {
               $COLUMN_ID_2 INTEGER PRIMARY KEY AUTOINCREMENT,
               $COLUMN_NAME_2 TEXT NOT NULL,
               $COLUMN_EVENT_ID_2 INTEGER NOT NULL,
+              $COLUMN_GROUP TEXT,
               $COLUMN_EMAIL_2 TEXT NOT NULL,
               FOREIGN KEY ($COLUMN_EVENT_ID_2) REFERENCES $TABLE_NAME_1($COLUMN_ID_1) ON DELETE CASCADE,
               UNIQUE($COLUMN_EVENT_ID_2, $COLUMN_EMAIL_2)
@@ -210,12 +212,14 @@ class DBHelper {
     required String name,
     required int eventId,
     required String email,
+    required String groupname,
   }) async {
     try {
       final db = await getDB();
       final rowsAffected = await db.insert(TABLE_NAME_2, {
         COLUMN_NAME_2: name,
         COLUMN_EVENT_ID_2: eventId,
+        COLUMN_GROUP: groupname,
         COLUMN_EMAIL_2: email,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
       print("Inserted participant, rows affected: $rowsAffected");
@@ -447,5 +451,4 @@ class DBHelper {
     await db.close();
     myDB = null;
   }
-
 }
