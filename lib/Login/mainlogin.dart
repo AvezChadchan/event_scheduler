@@ -1,3 +1,5 @@
+import 'package:event_scheduler/components/inputfield.dart';
+import 'package:event_scheduler/components/neonbutton.dart';
 import 'package:event_scheduler/screens/admin_dashboard.dart';
 import 'package:event_scheduler/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -139,64 +141,6 @@ class _MainLoginState extends State<MainLogin> {
                   ),
                 ),
               ),
-    );
-  }
-
-  Widget buildInputField(
-    IconData icon,
-    String hint,
-    TextEditingController controller, {
-    bool isPassword = false,
-  }) {
-    return TextField(
-      controller: controller,
-      obscureText: isPassword,
-      style: TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: Colors.cyanAccent),
-        labelText: hint,
-        labelStyle: TextStyle(
-          color: Colors.white,
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
-        filled: true,
-        fillColor: Colors.blueGrey.shade700,
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(width: 3, color: Colors.cyan),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(width: 2, color: Colors.grey),
-        ),
-      ),
-    );
-  }
-
-  Widget neonButton(String text, VoidCallback onPressed) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.cyanAccent, Colors.blueAccent],
-        ),
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(color: Colors.cyanAccent.withOpacity(0.5), blurRadius: 10),
-        ],
-      ),
-      child: TextButton(
-        onPressed: onPressed,
-        child: Text(
-          text,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
     );
   }
 
