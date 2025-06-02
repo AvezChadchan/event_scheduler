@@ -72,72 +72,75 @@ class _EventCreateState extends State<EventCreate> {
       body: Container(
         color: Colors.blueGrey.shade900,
         child: Center(
-          child: Container(
-            height: 700,
-            padding: const EdgeInsets.all(14),
-            margin: const EdgeInsets.symmetric(horizontal: 15),
-            decoration: BoxDecoration(
-              color: Colors.blueGrey.shade800,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                buildInputField(
-                  Icons.event,
-                  "Event Name",
-                  event_name_controller,
+          child: SingleChildScrollView(
+            child: Container(
+                height: 600,
+                padding: const EdgeInsets.all(14),
+                margin: const EdgeInsets.symmetric(horizontal: 15),
+                decoration: BoxDecoration(
+                  color: Colors.blueGrey.shade800,
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                SizedBox(height: 17),
-                buildInputField(
-                  Icons.description,
-                  "Event Description",
-                  event_description_controller,
-                ),
-                SizedBox(height: 17),
-                GestureDetector(
-                  onTap: () => _pickDate(context),
-                  child: AbsorbPointer(
-                    child: buildInputField(
-                      Icons.calendar_today_outlined,
-                      "Event Date",
-                      event_date_controller,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buildInputField(
+                      Icons.event,
+                      "Event Name",
+                      event_name_controller,
                     ),
-                  ),
-                ),
-                SizedBox(height: 17),
-                GestureDetector(
-                  onTap: () => _pickTime(context),
-                  child: AbsorbPointer(
-                    child: buildInputField(
-                      Icons.timer_outlined,
-                      "Event Time",
-                      event_time_controller,
+                    SizedBox(height: 17),
+                    buildInputField(
+                      Icons.description,
+                      "Event Description",
+                      event_description_controller,
                     ),
-                  ),
-                ),
-                SizedBox(height: 17),
+                    SizedBox(height: 17),
+                    GestureDetector(
+                      onTap: () => _pickDate(context),
+                      child: AbsorbPointer(
+                        child: buildInputField(
+                          Icons.calendar_today_outlined,
+                          "Event Date",
+                          event_date_controller,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 17),
+                    GestureDetector(
+                      onTap: () => _pickTime(context),
+                      child: AbsorbPointer(
+                        child: buildInputField(
+                          Icons.timer_outlined,
+                          "Event Time",
+                          event_time_controller,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 17),
 
-                buildInputField(
-                  Icons.person,
-                  "Event Organizer",
-                  event_organizer_controller,
-                ),
-                SizedBox(height: 17),
+                    buildInputField(
+                      Icons.person,
+                      "Event Organizer",
+                      event_organizer_controller,
+                    ),
+                    SizedBox(height: 17),
 
-                buildInputField(
-                  Icons.location_city,
-                  "Location",
-                  event_location_controller,
-                ),
-                SizedBox(height: 35),
-                neonButton("Add Event", (){
+                    buildInputField(
+                      Icons.location_city,
+                      "Location",
+                      event_location_controller,
+                    ),
+                    SizedBox(height: 35),
+                    neonButton("Add Event", (){
 
-                }),
-              ],
+                    }),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
+
       ),
     );
   }
