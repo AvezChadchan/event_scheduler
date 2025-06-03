@@ -13,7 +13,9 @@ class EventCard extends StatelessWidget{
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        elevation: 4,
+        elevation: 5,
+        shadowColor: Colors.white,
+        color: Colors.blueGrey.shade300,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -30,7 +32,7 @@ class EventCard extends StatelessWidget{
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(Icons.calendar_today, size: 16, color: Colors.grey),
+                  Icon(Icons.calendar_today, size: 20, color: Colors.white),
                   const SizedBox(width: 4),
                   Text(event.date),
                 ],
@@ -39,7 +41,7 @@ class EventCard extends StatelessWidget{
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(Icons.access_time, size: 16, color: Colors.grey),
+                  Icon(Icons.access_time, size: 20, color: Colors.white),
                   const SizedBox(width: 4),
                   Text(event.time),
             ],
@@ -47,7 +49,7 @@ class EventCard extends StatelessWidget{
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(Icons.person, size: 16, color: Colors.grey),
+                  Icon(Icons.person, size: 20, color: Colors.white),
                   const SizedBox(width: 4),
                   Text(event.organizer),
                 ],

@@ -123,22 +123,25 @@ class _AdminDashboardState extends State<AdminDashboard> {
               : _events.isNotEmpty
               ? RefreshIndicator(
                 onRefresh: _fetchEvents,
-                child: GridView.builder(
-                  padding: const EdgeInsets.all(16),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 0.75,
+                child: Container(
+                  color: Colors.blueGrey.shade900,
+                  child: GridView.builder(
+                    padding: const EdgeInsets.all(16),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 0.75,
+                    ),
+                    itemCount: _events.length,
+                    itemBuilder: (context, index) {
+                      final event = _events[index];
+                      return EventCard(
+                        event: event,
+                        onTap: () => _gotoEventDetail(event),
+                      );
+                    },
                   ),
-                  itemCount: _events.length,
-                  itemBuilder: (context, index) {
-                    final event = _events[index];
-                    return EventCard(
-                      event: event,
-                      onTap: () => _gotoEventDetail(event),
-                    );
-                  },
                 ),
               )
               : const Center(
@@ -153,7 +156,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
               ),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToCreateEvent,
-        backgroundColor: Colors.blueGrey.shade700,
+        backgroundColor: Colors.blueGrey.shade300,
         child: const Icon(Icons.add, size: 35, color: Colors.white),
       ),
     );
