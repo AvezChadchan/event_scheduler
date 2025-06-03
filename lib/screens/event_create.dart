@@ -12,7 +12,7 @@ class EventCreate extends StatefulWidget {
 
 class _EventCreateState extends State<EventCreate> {
   final _formKey = GlobalKey<FormState>();
-  final event_name_controller = TextEditingController();
+  final event_title_controller = TextEditingController();
   final event_description_controller = TextEditingController();
   final event_date_controller = TextEditingController();
   final event_time_controller = TextEditingController();
@@ -66,7 +66,7 @@ class _EventCreateState extends State<EventCreate> {
 
     final dbHelper = DBHelper.instance;
     final success = await dbHelper.insertEvent(
-      title: event_name_controller.text.trim(),
+      title: event_title_controller.text.trim(),
       description: event_description_controller.text.trim(),
       date: event_date_controller.text.trim(),
       time: event_time_controller.text.trim(),
@@ -85,7 +85,7 @@ class _EventCreateState extends State<EventCreate> {
           ),
         );
         // Clear form
-        event_name_controller.clear();
+        event_title_controller.clear();
         event_description_controller.clear();
         event_date_controller.clear();
         event_time_controller.clear();
@@ -102,7 +102,7 @@ class _EventCreateState extends State<EventCreate> {
 
   @override
   void dispose() {
-    event_name_controller.dispose();
+    event_title_controller.dispose();
     event_description_controller.dispose();
     event_date_controller.dispose();
     event_time_controller.dispose();
@@ -147,7 +147,7 @@ class _EventCreateState extends State<EventCreate> {
                     buildInputField(
                       Icons.event,
                       "Event Name",
-                      event_name_controller,
+                      event_title_controller,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return 'Please enter an event name';
