@@ -132,7 +132,7 @@ class _EventCreateState extends State<EventCreate> {
         child: Center(
           child: SingleChildScrollView(
             child: Container(
-              height: 650, // Increased height to accommodate new field
+              height: 700, // Increased height to accommodate new field
               padding: const EdgeInsets.all(14),
               margin: const EdgeInsets.symmetric(horizontal: 15),
               decoration: BoxDecoration(

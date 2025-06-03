@@ -42,7 +42,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
       print("Error fetching events: $e");
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Failed to load events. Please try again.';
+         _errorMessage = 'Failed to load events. Please try again.';
       });
     }
   }

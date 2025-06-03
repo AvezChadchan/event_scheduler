@@ -25,7 +25,7 @@ class EventCard extends StatelessWidget{
             children: [
               Text(event.title,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               SizedBox(height: 10),
-              Text(event.description,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),),
+              Text(event.description,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13),),
               SizedBox(height: 15,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -44,6 +44,14 @@ class EventCard extends StatelessWidget{
                   Text(event.time),
             ],
           ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(Icons.person, size: 16, color: Colors.grey),
+                  const SizedBox(width: 4),
+                  Text(event.organizer),
+                ],
+              ),
           ],
           ),
         ),
