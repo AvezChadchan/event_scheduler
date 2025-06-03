@@ -7,10 +7,9 @@ import 'package:sqflite/sqflite.dart';
 
 class DBHelper {
   DBHelper._();
-
   static DBHelper get instance => DBHelper._();
 
-  // Table and column names for events
+  // Table and column names
   static const String TABLE_NAME_1 = "events";
   static const String COLUMN_ID_1 = "id";
   static const String COLUMN_TITLE_1 = "title";
@@ -19,16 +18,15 @@ class DBHelper {
   static const String COLUMN_TIME_1 = "time";
   static const String COLUMN_ORGANIZER_1 = "organizer";
   static const String COLUMN_LOCATION_1 = "location";
+  static const String COLUMN_IS_GROUP_BASED_1 = "is_group_based";
 
-  // Table and column names for participants
   static const String TABLE_NAME_2 = "participants";
   static const String COLUMN_ID_2 = "id";
   static const String COLUMN_NAME_2 = "name";
   static const String COLUMN_EVENT_ID_2 = "event_id";
-  static const String COLUMN_GROUP="group_name";
+  static const String COLUMN_GROUP = "group_name";
   static const String COLUMN_EMAIL_2 = "email";
 
-  // Table and column names for attendance
   static const String TABLE_NAME_3 = "attendance";
   static const String COLUMN_ID_3 = "id";
   static const String COLUMN_EVENT_ID_3 = "event_id";
@@ -48,8 +46,8 @@ class DBHelper {
       var path = join(dirPath.path, "event_schedule.db");
       return await openDatabase(
         path,
+        version: 2, // Incremented version for schema change
         onCreate: (db, version) async {
-          // Create events table
           await db.execute('''
             CREATE TABLE $TABLE_NAME_1 (
               $COLUMN_ID_1 INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -58,11 +56,10 @@ class DBHelper {
               $COLUMN_DATE_1 TEXT NOT NULL,
               $COLUMN_TIME_1 TEXT NOT NULL,
               $COLUMN_ORGANIZER_1 TEXT NOT NULL,
-              $COLUMN_LOCATION_1 TEXT NOT NULL
+              $COLUMN_LOCATION_1 TEXT NOT NULL,
+              $COLUMN_IS_GROUP_BASED_1 INTEGER NOT NULL DEFAULT 0
             )
           ''');
-
-          // Create participants table
           await db.execute('''
             CREATE TABLE $TABLE_NAME_2 (
               $COLUMN_ID_2 INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -74,8 +71,6 @@ class DBHelper {
               UNIQUE($COLUMN_EVENT_ID_2, $COLUMN_EMAIL_2)
             )
           ''');
-
-          // Create attendance table
           await db.execute('''
             CREATE TABLE $TABLE_NAME_3 (
               $COLUMN_ID_3 INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -88,10 +83,13 @@ class DBHelper {
             )
           ''');
         },
-        onUpgrade: (db, oldVersion, newVersion) {
-          // Handle schema migrations if needed
+        onUpgrade: (db, oldVersion, newVersion) async {
+          if (oldVersion < 2) {
+            await db.execute('''
+              ALTER TABLE $TABLE_NAME_1 ADD $COLUMN_IS_GROUP_BASED_1 INTEGER NOT NULL DEFAULT 0
+            ''');
+          }
         },
-        version: 1,
       );
     } catch (e) {
       print("Error opening database: $e");
@@ -99,7 +97,7 @@ class DBHelper {
     }
   }
 
-  //CRUD for events
+  // CRUD for events
   Future<bool> insertEvent({
     required String title,
     required String description,
@@ -107,6 +105,7 @@ class DBHelper {
     required String time,
     required String organizer,
     required String location,
+    required bool isGroupBased,
   }) async {
     try {
       final db = await getDB();
@@ -117,6 +116,7 @@ class DBHelper {
         COLUMN_TIME_1: time,
         COLUMN_ORGANIZER_1: organizer,
         COLUMN_LOCATION_1: location,
+        COLUMN_IS_GROUP_BASED_1: isGroupBased ? 1 : 0,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
       print("Inserted Rows: $rowsAffected");
       return rowsAffected > 0;
@@ -129,11 +129,14 @@ class DBHelper {
   Future<List<EventModel>> getAllEvents() async {
     try {
       final db = await getDB();
-      final List<Map<String,dynamic>> maps = await db.query(
+      final List<Map<String, dynamic>> maps = await db.query(
         TABLE_NAME_1,
         orderBy: '$COLUMN_DATE_1 ASC',
       );
-      final events=maps.map((map)=>EventModel.fromMap(map)).toList();
+      final events = maps.map((map) => EventModel.fromMap({
+        ...map,
+        COLUMN_IS_GROUP_BASED_1: map[COLUMN_IS_GROUP_BASED_1] == 1,
+      })).toList();
       print("All Events: $events");
       return events;
     } catch (e) {
@@ -150,7 +153,12 @@ class DBHelper {
         where: '$COLUMN_ID_1 = ?',
         whereArgs: [id],
       );
-      final event = maps.isNotEmpty ? EventModel.fromMap(maps.first) : null;
+      final event = maps.isNotEmpty
+          ? EventModel.fromMap({
+        ...maps.first,
+        COLUMN_IS_GROUP_BASED_1: maps.first[COLUMN_IS_GROUP_BASED_1] == 1,
+      })
+          : null;
       print("Event by ID: $event");
       return event;
     } catch (e) {
@@ -167,6 +175,7 @@ class DBHelper {
     required String time,
     required String organizer,
     required String location,
+    required bool isGroupBased,
   }) async {
     try {
       final db = await getDB();
@@ -179,6 +188,7 @@ class DBHelper {
           COLUMN_TIME_1: time,
           COLUMN_ORGANIZER_1: organizer,
           COLUMN_LOCATION_1: location,
+          COLUMN_IS_GROUP_BASED_1: isGroupBased ? 1 : 0,
         },
         where: '$COLUMN_ID_1 = ?',
         whereArgs: [id],
@@ -207,19 +217,28 @@ class DBHelper {
     }
   }
 
-  //CRUD for participants
+  // CRUD for participants
   Future<bool> insertParticipant({
     required String name,
     required int eventId,
     required String email,
-    required String groupname,
+    required String? groupName,
   }) async {
     try {
       final db = await getDB();
+      final event = await getEventById(eventId);
+      if (event == null) {
+        print("Error: Event with ID $eventId does not exist");
+        return false;
+      }
+      if (event.isGroupBased && (groupName == null || groupName.isEmpty)) {
+        print("Error: Group name is required for group-based event");
+        return false;
+      }
       final rowsAffected = await db.insert(TABLE_NAME_2, {
         COLUMN_NAME_2: name,
         COLUMN_EVENT_ID_2: eventId,
-        COLUMN_GROUP: groupname,
+        COLUMN_GROUP: groupName,
         COLUMN_EMAIL_2: email,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
       print("Inserted participant, rows affected: $rowsAffected");
@@ -230,19 +249,36 @@ class DBHelper {
     }
   }
 
-  Future<List<ParticipantModel>> getParticipantsByEvent(int eventID) async {
+  Future<List<ParticipantModel>> getParticipantsByEvent(int eventId) async {
     try {
       final db = await getDB();
       final maps = await db.query(
         TABLE_NAME_2,
-        where: "$COLUMN_EVENT_ID_2=?",
-        whereArgs: [eventID],
+        where: "$COLUMN_EVENT_ID_2 = ?",
+        whereArgs: [eventId],
       );
-      final participants=maps.map((map)=>ParticipantModel.fromMap(map)).toList();
-      print("Participants for event $eventID: $participants");
+      final participants = maps.map((map) => ParticipantModel.fromMap(map)).toList();
+      print("Participants for event $eventId: $participants");
       return participants;
     } catch (e) {
       print("Error fetching participants: $e");
+      return [];
+    }
+  }
+
+  Future<List<ParticipantModel>> getParticipantsByGroup(int eventId, String groupName) async {
+    try {
+      final db = await getDB();
+      final maps = await db.query(
+        TABLE_NAME_2,
+        where: "$COLUMN_EVENT_ID_2 = ? AND $COLUMN_GROUP = ?",
+        whereArgs: [eventId, groupName],
+      );
+      final participants = maps.map((map) => ParticipantModel.fromMap(map)).toList();
+      print("Participants for event $eventId in group $groupName: $participants");
+      return participants;
+    } catch (e) {
+      print("Error fetching participants by group: $e");
       return [];
     }
   }
@@ -255,7 +291,7 @@ class DBHelper {
         where: '$COLUMN_ID_2 = ?',
         whereArgs: [id],
       );
-      final participants=map.map((map)=>ParticipantModel.fromMap(map)).toList();
+      final participants = map.map((map) => ParticipantModel.fromMap(map)).toList();
       final participant = participants.isNotEmpty ? participants.first : null;
       print("Participant by ID: $participant");
       return participant;
@@ -270,14 +306,25 @@ class DBHelper {
     required String name,
     required int eventId,
     required String email,
+    required String? groupName,
   }) async {
     try {
       final db = await getDB();
+      final event = await getEventById(eventId);
+      if (event == null) {
+        print("Error: Event with ID $eventId does not exist");
+        return false;
+      }
+      if (event.isGroupBased && (groupName == null || groupName.isEmpty)) {
+        print("Error: Group name is required for group-based event");
+        return false;
+      }
       final rowsAffected = await db.update(
         TABLE_NAME_2,
         {
           COLUMN_NAME_2: name,
           COLUMN_EVENT_ID_2: eventId,
+          COLUMN_GROUP: groupName,
           COLUMN_EMAIL_2: email,
         },
         where: '$COLUMN_ID_2 = ?',
@@ -307,7 +354,7 @@ class DBHelper {
     }
   }
 
-  //CRUD for attendance
+  // CRUD for attendance
   Future<bool> insertAttendance({
     required int eventId,
     required int participantId,
@@ -338,7 +385,6 @@ class DBHelper {
       );
       final attendance = map.map((map) => AttendanceModel.fromMap(map)).toList();
       print("Attendance for event $eventId: $attendance");
-
       return attendance;
     } catch (e) {
       print("Error fetching attendance: $e");
@@ -408,10 +454,10 @@ class DBHelper {
 
   // Additional Utility Methods
   Future<bool> hasScheduleConflict(
-    String date,
-    String time,
-    String location,
-  ) async {
+      String date,
+      String time,
+      String location,
+      ) async {
     try {
       final db = await getDB();
       final result = await db.query(
@@ -436,7 +482,7 @@ class DBHelper {
         FROM $TABLE_NAME_2 p
         INNER JOIN $TABLE_NAME_3 a ON p.$COLUMN_ID_2 = a.$COLUMN_PARTICIPANT_ID_3
         WHERE a.$COLUMN_EVENT_ID_3 = ?
-      ''',
+        ''',
         [eventId],
       );
       print("Attendees for event $eventId: $result");
@@ -446,6 +492,17 @@ class DBHelper {
       return [];
     }
   }
+
+  Future<bool> isGroupBasedEvent(int eventId) async {
+    try {
+      final event = await getEventById(eventId);
+      return event?.isGroupBased ?? false;
+    } catch (e) {
+      print("Error checking if event is group-based: $e");
+      return false;
+    }
+  }
+
   Future<void> closeDB() async {
     final db = await getDB();
     await db.close();
