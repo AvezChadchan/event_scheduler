@@ -28,7 +28,7 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void gotoEventDetail(EventModel event) {
+  void _gotoEventDetail(EventModel event) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => EventDetailScreen(event: event)),
@@ -45,21 +45,22 @@ class HomeScreenState extends State<HomeScreen> {
         child:
             _events.isNotEmpty
                 ? GridView.builder(
-                  itemCount: _events.length,
-                  itemBuilder: (context, index) {
-                    final event = _events[index];
-                    return EventCard(
-                      event: event,
-                      onTap: () => gotoEventDetail(event),
-                    );
-                  },
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                  ),
-                )
-                : Center(child: Text("No events found.")),
+              padding: const EdgeInsets.all(16),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 0.75,
+              ),
+              itemCount: _events.length,
+              itemBuilder: (context, index) {
+                final event = _events[index];
+                return EventCard(
+                  event: event,
+                  onTap: () => _gotoEventDetail(event),
+                );
+              },
+            ) : Center(child: Text("No events found.")),
       ),
     );
   }
