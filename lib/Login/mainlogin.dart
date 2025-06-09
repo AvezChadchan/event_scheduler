@@ -5,6 +5,10 @@ import 'package:event_scheduler/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainLogin extends StatefulWidget {
+  // final bool isDarkMode;
+  // final VoidCallback onThemeToggle;
+  //
+  // const MainLogin({super.key, required this.isDarkMode, required this.onThemeToggle});
   @override
   State<MainLogin> createState() => _MainLoginState();
 }
@@ -19,7 +23,14 @@ class _MainLoginState extends State<MainLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.blueGrey.shade900),
+      appBar: AppBar(backgroundColor: Colors.blueGrey.shade900,
+      //   actions: [
+      //   IconButton(
+      //     onPressed: widget.onThemeToggle,
+      //     icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+      //   ),
+      // ],
+      ),
       body:
           isAdmin
               ? Container(
