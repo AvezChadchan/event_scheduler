@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 class EventCard extends StatelessWidget {
   final EventModel event;
   final VoidCallback onTap;
-
   EventCard({required this.event, required this.onTap});
 
   @override
@@ -14,7 +13,6 @@ class EventCard extends StatelessWidget {
       onTap: onTap,
       child: Card(
         elevation: 30,
-        // shadowColor: Colors.white,
         color: Colors.blueGrey.shade800,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),

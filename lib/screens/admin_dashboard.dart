@@ -33,16 +33,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
     try {
       final data = await dbRef!.getAllEvents();
-      print("Fetched Events: $data"); // Log the fetched data
       setState(() {
         _events = data;
         _isLoading = false;
       });
     } catch (e) {
-      print("Error fetching events: $e");
       setState(() {
         _isLoading = false;
-         _errorMessage = 'Failed to load events. Please try again.';
+        _errorMessage = 'Failed to load events. Please try again.';
       });
     }
   }
@@ -50,9 +48,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
   void _gotoEventDetail(EventModel event) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => EventDetailScreen(event: event)),
+      MaterialPageRoute(
+        builder: (context) => EventDetailScreen(event: event, isUser: false),
+      ),
     );
-    print("Clicked on Event: ${event.title}");
   }
 
   Future<void> _navigateToCreateEvent() async {
@@ -60,7 +59,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
       context,
       MaterialPageRoute(builder: (context) => const EventCreate()),
     );
-    // Refresh events if a new event was created
     if (result == true) {
       _fetchEvents();
     }
@@ -71,7 +69,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Dashboard",
+          "Admin Dashboard",
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -127,12 +125,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   color: Colors.blueGrey.shade900,
                   child: GridView.builder(
                     padding: const EdgeInsets.all(16),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 0.75,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 0.75,
+                        ),
                     itemCount: _events.length,
                     itemBuilder: (context, index) {
                       final event = _events[index];
