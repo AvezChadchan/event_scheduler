@@ -19,7 +19,7 @@ class _EventRegistrationState extends State<EventRegistration> {
       body:
         Column(
           children: [
-            Text("Event RegFistration"),
+            Text("Event Registration"),
           ],
         )
     );
