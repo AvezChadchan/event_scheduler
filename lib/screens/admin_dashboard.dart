@@ -2,6 +2,7 @@ import 'package:event_scheduler/data/local/db_helper.dart';
 import 'package:event_scheduler/models/event_model.dart';
 import 'package:event_scheduler/screens/event_create.dart';
 import 'package:event_scheduler/screens/event_detail.dart';
+import 'package:event_scheduler/screens/get_participants.dart';
 import 'package:event_scheduler/widgets/eventcard.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
   List<EventModel> _events = [];
   bool _isLoading = true;
   String? _errorMessage;
-
   @override
   void initState() {
     super.initState();
@@ -62,6 +62,76 @@ class _AdminDashboardState extends State<AdminDashboard> {
     }
   }
 
+  void _showEventSelectionDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        EventModel? selectedEvent;
+        return AlertDialog(
+          titleTextStyle: TextStyle(fontSize: 30,fontWeight: FontWeight.bold,color: Colors.white),
+          backgroundColor: Colors.blueGrey.shade800,
+          title: Text("Select Event"),
+          content: StatefulBuilder(
+            builder: (context, setState) {
+              return DropdownButton<EventModel>(
+                value: selectedEvent,
+                hint: Text("Choose Event"),
+                isExpanded: true,
+                items:
+                    _events.map((event) {
+                      return DropdownMenuItem(
+                        value: event,
+                        child: Text(event.title),
+                      );
+                    }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedEvent = value;
+                  });
+                },
+                borderRadius: BorderRadius.circular(15),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+                dropdownColor: Colors.blueGrey,
+              );
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Cancel",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (selectedEvent != null) {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => GetParticipants(event: selectedEvent!),
+                    ),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueGrey,
+                foregroundColor: Colors.white,
+        ),
+              child: Text("View Participants"),
+
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,6 +151,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
             icon: const Icon(Icons.refresh, color: Colors.white),
             onPressed: _fetchEvents,
             tooltip: 'Refresh Events',
+          ),
+          IconButton(
+            icon: const Icon(Icons.group, color: Colors.white),
+            tooltip: "View Participants",
+            onPressed: () {
+              _showEventSelectionDialog();
+            },
           ),
         ],
       ),

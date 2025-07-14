@@ -17,6 +17,7 @@ class _EventRegistrationState extends State<EventRegistration> {
   EventModel? _selectedEvent;
   List<EventModel> _events = [];
   bool isLoading = true;
+  bool isGroupEvent = false;
 
   @override
   void initState() {
@@ -49,17 +50,19 @@ class _EventRegistrationState extends State<EventRegistration> {
       name: _nameController.text.trim(),
       eventId: _selectedEvent!.id!,
       email: _emailController.text.trim(),
-      groupName: _groupNameController.text.trim(),
-      groupMembersName: _groupMembersController.text.trim(),
+      groupName: isGroupEvent ? _groupNameController.text.trim() : null,
+      groupMembers: isGroupEvent ? _groupMembersController.text.trim() : null,
     );
 
     if (success) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Registration Successful")));
+      _formKey.currentState!.reset();
       _nameController.clear();
       _emailController.clear();
       _groupNameController.clear();
+      _groupMembersController.clear();
       setState(() => _selectedEvent = null);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -74,7 +77,11 @@ class _EventRegistrationState extends State<EventRegistration> {
       appBar: AppBar(
         title: const Text(
           "Register",
-          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold,color: Colors.white),
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.blueGrey.shade900,
@@ -94,19 +101,19 @@ class _EventRegistrationState extends State<EventRegistration> {
                     children: [
                       DropdownButtonFormField<EventModel>(
                         value: _selectedEvent,
-                        hint: const Text("Select Event"),
-                        decoration: const InputDecoration(
+                        hint: Text("Select Event"),
+                        decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         ),
                         items:
-                            _events.map((event) {
+                            _events.map((e) {
                               return DropdownMenuItem<EventModel>(
-                                value: event,
-                                child: Text(event.title),
+                                value: e,
+                                child: Text(e.title),
                               );
                             }).toList(),
-                        onChanged: (event) {
-                          setState(() => _selectedEvent = event);
+                        onChanged: (value) {
+                          setState(() => _selectedEvent = value);
                         },
                         validator:
                             (value) =>
@@ -127,13 +134,36 @@ class _EventRegistrationState extends State<EventRegistration> {
                         keyboardType: TextInputType.emailAddress,
                       ),
                       const SizedBox(height: 16),
-                      customTextFormField(
-                        controller: _groupNameController,
-                        hintText: "Enter Group Name",
-                        labelText: "Group Name",
-                        keyboardType: TextInputType.text,
+                      SwitchListTile(
+                        value: isGroupEvent,
+                        title: Text(
+                          isGroupEvent
+                              ? "This is a Group-Based Event"
+                              : "This is an Individual Event",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueGrey,
+                          ),
+                        ),
+                        onChanged: null,
                       ),
-                      const SizedBox(height: 24),
+
+                      if (isGroupEvent) ...[
+                        SizedBox(height: 16),
+                        customTextFormField(
+                          controller: _groupNameController,
+                          hintText: "Enter Group Name",
+                          labelText: "Group Name",
+                          keyboardType: TextInputType.name,
+                        ),
+                        SizedBox(height: 16),
+                        customTextFormField(
+                          controller: _groupMembersController,
+                          hintText: "Enter Group Members",
+                          labelText: "Group Members",
+                        ),
+                      ],
+                      SizedBox(height: 24),
                       ElevatedButton.icon(
                         onPressed: _registerParticipant,
                         icon: Icon(Icons.check),

@@ -58,14 +58,12 @@ class _EventCreateState extends State<EventCreate> {
 
   Future<void> _saveEvent() async {
     if (!_formKey.currentState!.validate()) return;
-
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
 
-    final dbHelper = DBHelper.instance;
-    final success = await dbHelper.insertEvent(
+    final success = await DBHelper.instance.insertEvent(
       title: event_title_controller.text.trim(),
       description: event_description_controller.text.trim(),
       date: event_date_controller.text.trim(),

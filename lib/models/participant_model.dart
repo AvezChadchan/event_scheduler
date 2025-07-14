@@ -5,7 +5,7 @@ class ParticipantModel {
   final String name;
   final int eventId;
   final String? groupName;
-  final String? groupMembername;
+  final String? groupMembers;
   final String email;
 
   ParticipantModel({
@@ -13,7 +13,7 @@ class ParticipantModel {
     required this.name,
     required this.eventId,
     this.groupName,
-    this.groupMembername,
+    this.groupMembers,
     required this.email,
   });
 
@@ -23,7 +23,7 @@ class ParticipantModel {
       name: map[DBHelper.COLUMN_NAME_2] as String,
       eventId: map[DBHelper.COLUMN_EVENT_ID_2] as int,
       groupName: map[DBHelper.COLUMN_GROUP] as String?,
-      groupMembername: map[DBHelper.COLUMN_GROUP_MEMBERS] as String?,
+      groupMembers: map[DBHelper.COLUMN_GROUP_MEMBERS] as String?,
       email: map[DBHelper.COLUMN_EMAIL_2] as String,
     );
   }
@@ -34,13 +34,13 @@ class ParticipantModel {
       DBHelper.COLUMN_NAME_2: name,
       DBHelper.COLUMN_EVENT_ID_2: eventId,
       DBHelper.COLUMN_GROUP: groupName,
-      DBHelper.COLUMN_GROUP_MEMBERS: groupMembername,
+      DBHelper.COLUMN_GROUP_MEMBERS: groupMembers,
       DBHelper.COLUMN_EMAIL_2: email,
     };
   }
 
   @override
   String toString() {
-    return 'ParticipantModel(id: $id, name: $name, eventId: $eventId, groupName: $groupName, email: $email)';
+    return 'ParticipantModel(id: $id, name: $name, eventId: $eventId, groupName: $groupName, groupMembers: $groupMembers, email: $email)';
   }
 }

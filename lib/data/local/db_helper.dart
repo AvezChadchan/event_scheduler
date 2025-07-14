@@ -168,6 +168,23 @@ class DBHelper {
       return null;
     }
   }
+  Future<List<EventModel>> getGroupBasedEvents() async {
+    try {
+      final db = await getDB();
+      final maps = await db.query(
+        TABLE_NAME_1,
+        where: '$COLUMN_IS_GROUP_BASED_1 = ?',
+        whereArgs: [1],
+      );
+      return maps.map((map) => EventModel.fromMap({
+        ...map,
+        COLUMN_IS_GROUP_BASED_1: map[COLUMN_IS_GROUP_BASED_1] == 1,
+      })).toList();
+    } catch (e) {
+      print("Error fetching group-based events: $e");
+      return [];
+    }
+  }
 
   Future<bool> updateEvent({
     required int id,
@@ -225,7 +242,7 @@ class DBHelper {
     required int eventId,
     required String email,
     required String? groupName,
-    required String? groupMembersName
+    required String? groupMembers
   }) async {
     try {
       final db = await getDB();
@@ -234,15 +251,15 @@ class DBHelper {
         print("Error: Event with ID $eventId does not exist");
         return false;
       }
-      if (event.isGroupBased && (groupName == null || groupName.isEmpty)) {
-        print("Error: Group name is required for group-based event");
+      if (event.isGroupBased && (groupMembers == null || groupMembers.isEmpty)) {
+        print("Error: Group members required for group-based event");
         return false;
       }
       final rowsAffected = await db.insert(TABLE_NAME_2, {
         COLUMN_NAME_2: name,
         COLUMN_EVENT_ID_2: eventId,
         COLUMN_GROUP: groupName,
-        COLUMN_GROUP_MEMBERS: groupMembersName,
+        COLUMN_GROUP_MEMBERS: groupMembers,
         COLUMN_EMAIL_2: email,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
       print("Inserted participant, rows affected: $rowsAffected");
@@ -311,7 +328,7 @@ class DBHelper {
     required int eventId,
     required String email,
     required String? groupName,
-    required String? groupMembersName,
+    required String? groupMembers,
   }) async {
     try {
       final db = await getDB();
@@ -330,7 +347,7 @@ class DBHelper {
           COLUMN_NAME_2: name,
           COLUMN_EVENT_ID_2: eventId,
           COLUMN_GROUP: groupName,
-          COLUMN_GROUP_MEMBERS: groupMembersName,
+          COLUMN_GROUP_MEMBERS: groupMembers,
           COLUMN_EMAIL_2: email,
         },
         where: '$COLUMN_ID_2 = ?',
@@ -357,6 +374,24 @@ class DBHelper {
     } catch (e) {
       print("Error deleting participant: $e");
       return false;
+    }
+  }
+
+  Future<List<String>> getGroupsInEvent(int eventId) async {
+    try {
+      final db = await getDB();
+      final maps = await db.rawQuery(
+        '''
+      SELECT DISTINCT $COLUMN_GROUP
+      FROM $TABLE_NAME_2
+      WHERE $COLUMN_EVENT_ID_2 = ? AND $COLUMN_GROUP IS NOT NULL AND $COLUMN_GROUP != ""
+      ''',
+        [eventId],
+      );
+      return maps.map((row) => row[COLUMN_GROUP] as String).toList();
+    } catch (e) {
+      print("Error fetching groups: $e");
+      return [];
     }
   }
 
