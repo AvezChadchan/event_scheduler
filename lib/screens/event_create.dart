@@ -124,13 +124,12 @@ class _EventCreateState extends State<EventCreate> {
           ),
         ),
         centerTitle: true,
-        leading: IconButton(onPressed: (){
-          Navigator.pop(context);
-
-        }, icon: Icon(Icons.cancel_rounded,color: Colors.white,size: 33,)),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.cancel_rounded, color: Colors.white, size: 33),
+        ),
         backgroundColor: Colors.blueGrey.shade900,
       ),
-
 
       body: Container(
         color: Colors.blueGrey.shade900,

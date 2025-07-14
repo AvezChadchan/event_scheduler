@@ -10,18 +10,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  DBHelper? dbRef;
   List<EventModel> _events = [];
 
   @override
   void initState() {
     super.initState();
-    dbRef = DBHelper.instance;
     _getEvents();
   }
 
   Future<void> _getEvents() async {
-    final data = await dbRef!.getAllEvents();
+    final data = await DBHelper.instance.getAllEvents();
     setState(() {
       _events = data;
     });

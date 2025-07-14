@@ -25,6 +25,7 @@ class DBHelper {
   static const String COLUMN_NAME_2 = "name";
   static const String COLUMN_EVENT_ID_2 = "event_id";
   static const String COLUMN_GROUP = "group_name";
+  static const String COLUMN_GROUP_MEMBERS = "group_members";
   static const String COLUMN_EMAIL_2 = "email";
 
   static const String TABLE_NAME_3 = "attendance";
@@ -66,6 +67,7 @@ class DBHelper {
               $COLUMN_NAME_2 TEXT NOT NULL,
               $COLUMN_EVENT_ID_2 INTEGER NOT NULL,
               $COLUMN_GROUP TEXT,
+              $COLUMN_GROUP_MEMBERS TEXT,
               $COLUMN_EMAIL_2 TEXT NOT NULL,
               FOREIGN KEY ($COLUMN_EVENT_ID_2) REFERENCES $TABLE_NAME_1($COLUMN_ID_1) ON DELETE CASCADE,
               UNIQUE($COLUMN_EVENT_ID_2, $COLUMN_EMAIL_2)
@@ -223,6 +225,7 @@ class DBHelper {
     required int eventId,
     required String email,
     required String? groupName,
+    required String? groupMembersName
   }) async {
     try {
       final db = await getDB();
@@ -239,6 +242,7 @@ class DBHelper {
         COLUMN_NAME_2: name,
         COLUMN_EVENT_ID_2: eventId,
         COLUMN_GROUP: groupName,
+        COLUMN_GROUP_MEMBERS: groupMembersName,
         COLUMN_EMAIL_2: email,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
       print("Inserted participant, rows affected: $rowsAffected");
@@ -307,6 +311,7 @@ class DBHelper {
     required int eventId,
     required String email,
     required String? groupName,
+    required String? groupMembersName,
   }) async {
     try {
       final db = await getDB();
@@ -325,6 +330,7 @@ class DBHelper {
           COLUMN_NAME_2: name,
           COLUMN_EVENT_ID_2: eventId,
           COLUMN_GROUP: groupName,
+          COLUMN_GROUP_MEMBERS: groupMembersName,
           COLUMN_EMAIL_2: email,
         },
         where: '$COLUMN_ID_2 = ?',

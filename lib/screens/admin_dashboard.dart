@@ -13,7 +13,6 @@ class AdminDashboard extends StatefulWidget {
 }
 
 class _AdminDashboardState extends State<AdminDashboard> {
-  DBHelper? dbRef;
   List<EventModel> _events = [];
   bool _isLoading = true;
   String? _errorMessage;
@@ -21,7 +20,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
   @override
   void initState() {
     super.initState();
-    dbRef = DBHelper.instance;
     _fetchEvents();
   }
 
@@ -32,7 +30,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     });
 
     try {
-      final data = await dbRef!.getAllEvents();
+      final data = await DBHelper.instance.getAllEvents();
       setState(() {
         _events = data;
         _isLoading = false;
