@@ -46,12 +46,31 @@ class _EventRegistrationState extends State<EventRegistration> {
       return;
     }
 
+    if (_selectedEvent!.isGroupBased) {
+      if (_groupNameController.text.trim().isEmpty ||
+          _groupMembersController.text.trim().isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Please fill in group name and group members"),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+    }
+
     final success = await DBHelper.instance.insertParticipant(
       name: _nameController.text.trim(),
       eventId: _selectedEvent!.id!,
       email: _emailController.text.trim(),
-      groupName: isGroupEvent ? _groupNameController.text.trim() : null,
-      groupMembers: isGroupEvent ? _groupMembersController.text.trim() : null,
+      groupName:
+          _selectedEvent!.isGroupBased
+              ? _groupNameController.text.trim()
+              : null,
+      groupMembers:
+          _selectedEvent!.isGroupBased
+              ? _groupMembersController.text.trim()
+              : null,
     );
 
     if (success) {
@@ -93,91 +112,111 @@ class _EventRegistrationState extends State<EventRegistration> {
       body:
           isLoading
               ? const Center(child: CircularProgressIndicator())
-              : Padding(
-                padding: const EdgeInsets.all(16),
-                child: Form(
-                  key: _formKey,
-                  child: ListView(
-                    children: [
-                      DropdownButtonFormField<EventModel>(
-                        value: _selectedEvent,
-                        hint: Text("Select Event"),
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                        ),
-                        items:
-                            _events.map((e) {
-                              return DropdownMenuItem<EventModel>(
-                                value: e,
-                                child: Text(e.title),
-                              );
-                            }).toList(),
-                        onChanged: (value) {
-                          setState(() => _selectedEvent = value);
-                        },
-                        validator:
-                            (value) =>
-                                value == null ? 'Please select an event' : null,
-                      ),
-                      const SizedBox(height: 16),
-                      customTextFormField(
-                        controller: _nameController,
-                        hintText: "Enter Name",
-                        labelText: "Name",
-                        keyboardType: TextInputType.name,
-                      ),
-                      const SizedBox(height: 16),
-                      customTextFormField(
-                        controller: _emailController,
-                        hintText: "Enter Email",
-                        labelText: "Email",
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      const SizedBox(height: 16),
-
-                      if (_selectedEvent?.isGroupBased == true) ...[
-                        SizedBox(height: 16),
-                        Text(
-                          "This is a Group-Based Event",
+              : Container(
+                color: Colors.blueGrey.shade900,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
+                      children: [
+                        DropdownButtonFormField<EventModel>(
+                          dropdownColor: Colors.blueGrey.shade700,
+                          focusColor: Colors.white,
                           style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            color: Colors.green,
                           ),
+                          value: _selectedEvent,
+                          hint: Text("Select Event"),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          items:
+                              _events.map((e) {
+                                return DropdownMenuItem<EventModel>(
+                                  value: e,
+                                  child: Text(e.title),
+                                );
+                              }).toList(),
+                          onChanged: (value) {
+                            setState(() => _selectedEvent = value);
+                          },
+                          validator:
+                              (value) =>
+                                  value == null
+                                      ? 'Please select an event'
+                                      : null,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         customTextFormField(
-                          controller: _groupNameController,
-                          hintText: "Enter Group Name",
-                          labelText: "Group Name",
+                          controller: _nameController,
+                          hintText: "Enter Name",
+                          labelText: "Name",
                           keyboardType: TextInputType.name,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         customTextFormField(
-                          controller: _groupMembersController,
-                          hintText: "Enter Group Members",
-                          labelText: "Group Members",
+                          controller: _emailController,
+                          hintText: "Enter Email",
+                          labelText: "Email",
+                          keyboardType: TextInputType.emailAddress,
                         ),
-                      ] else ...[
-                        SizedBox(height: 16),
-                        Text(
-                          "This is an Individual Event",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blueGrey,
+                        const SizedBox(height: 16),
+
+                        if (_selectedEvent?.isGroupBased == true) ...[
+                          SizedBox(height: 16),
+                          Text(
+                            "This is a Group-Based Event",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          customTextFormField(
+                            controller: _groupNameController,
+                            hintText: "Enter Group Name",
+                            labelText: "Group Name",
+                            keyboardType: TextInputType.name,
+                          ),
+                          SizedBox(height: 16),
+                          customTextFormField(
+                            controller: _groupMembersController,
+                            hintText: "Enter Group Members",
+                            labelText: "Group Members",
+                          ),
+                        ] else ...[
+                          SizedBox(height: 16),
+                          Text(
+                            "This is an Individual Event",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueGrey,
+                            ),
+                          ),
+                        ],
+                        SizedBox(height: 24),
+                        ElevatedButton.icon(
+                          onPressed: _registerParticipant,
+                          icon: Icon(Icons.check),
+                          label: Text("Register"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blueGrey.shade700,
+                            foregroundColor: Colors.white,
+                            textStyle: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                            padding: EdgeInsets.symmetric(vertical: 16),
                           ),
                         ),
                       ],
-                      SizedBox(height: 24),
-                      ElevatedButton.icon(
-                        onPressed: _registerParticipant,
-                        icon: Icon(Icons.check),
-                        label: Text("Register"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -190,18 +229,29 @@ class _EventRegistrationState extends State<EventRegistration> {
     required String labelText,
     String? Function(String?)? validator,
     TextInputType keyboardType = TextInputType.text,
-    int maxLines = 1,
-    bool obscureText = false,
   }) {
     return TextFormField(
+      style: TextStyle(
+        fontSize: 20,
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
       controller: controller,
       keyboardType: keyboardType,
-      maxLines: maxLines,
-      obscureText: obscureText,
+      maxLines: 1,
       decoration: InputDecoration(
         hintText: hintText,
         labelText: labelText,
-        border: const OutlineInputBorder(),
+        hintStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        labelStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.blueGrey.shade800, width: 3),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.blueGrey, width: 3),
+        ),
       ),
       validator:
           validator ??
