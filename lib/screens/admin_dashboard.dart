@@ -218,13 +218,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ),
                 ),
               )
-              : const Center(
-                child: Text(
-                  "No Events Created!",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Colors.blueGrey,
+              : Container(
+            height: double.infinity,
+                width: double.infinity,
+                color: Colors.blueGrey.shade900,
+                child: Center(
+                  child: Text(
+                    "No Events Created!",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.blueGrey,
+                    ),
                   ),
                 ),
               ),
