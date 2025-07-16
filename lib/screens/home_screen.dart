@@ -2,6 +2,7 @@ import 'package:event_scheduler/data/local/db_helper.dart';
 import 'package:event_scheduler/models/event_model.dart';
 import 'package:event_scheduler/screens/event_detail.dart';
 import 'package:event_scheduler/widgets/eventcard.dart';
+import 'package:event_scheduler/widgets/eventselection.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,7 +12,6 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   List<EventModel> _events = [];
-
   @override
   void initState() {
     super.initState();
@@ -52,6 +52,13 @@ class HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.refresh, color: Colors.white),
             onPressed: _getEvents,
             tooltip: 'Refresh Events',
+          ),
+          IconButton(
+            onPressed: () async{
+              await showSelectEventDialog(context: context, events: _events,isUser: true);
+            },
+            icon: Icon(Icons.people, color: Colors.white),
+            tooltip: "View My Registrations",
           ),
         ],
         backgroundColor: Colors.blueGrey.shade900,

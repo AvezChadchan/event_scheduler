@@ -24,14 +24,21 @@ class EventCard extends StatelessWidget {
               Center(
                 child: Text(
                   event.title,
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,color: Colors.white),
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                  overflow: TextOverflow.visible,
+                  style: TextStyle(
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               SizedBox(height: 15),
               _buildRow(Icons.calendar_month, event.date),
-              SizedBox(height: 15),
+              SizedBox(height: 10),
               _buildRow(Icons.timer_sharp, event.time),
-              SizedBox(height: 15),
+              SizedBox(height: 10),
               _buildRow(Icons.person, event.organizer),
             ],
           ),
@@ -39,12 +46,25 @@ class EventCard extends StatelessWidget {
       ),
     );
   }
-  Widget _buildRow(IconData icon,String value){
+
+  Widget _buildRow(IconData icon, String value) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon,size: 20,color: Colors.white,),
-        Text(value,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15,color: Colors.white),)
+        Icon(icon, size: 22, color: Colors.white),
+        SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            value,
+            overflow: TextOverflow.visible,
+            softWrap: true,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ],
     );
   }

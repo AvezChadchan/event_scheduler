@@ -306,29 +306,6 @@ class DBHelper {
     }
   }
 
-  Future<List<ParticipantModel>> getParticipantsByGroup(
-    int eventId,
-    String groupName,
-  ) async {
-    try {
-      final db = await getDB();
-      final maps = await db.query(
-        TABLE_NAME_2,
-        where: "$COLUMN_EVENT_ID_2 = ? AND $COLUMN_GROUP = ?",
-        whereArgs: [eventId, groupName],
-      );
-      final participants =
-          maps.map((map) => ParticipantModel.fromMap(map)).toList();
-      print(
-        "Participants for event $eventId in group $groupName: $participants",
-      );
-      return participants;
-    } catch (e) {
-      print("Error fetching participants by group: $e");
-      return [];
-    }
-  }
-
   Future<ParticipantModel?> getParticipantById(int id) async {
     try {
       final db = await getDB();

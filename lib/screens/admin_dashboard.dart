@@ -2,8 +2,8 @@ import 'package:event_scheduler/data/local/db_helper.dart';
 import 'package:event_scheduler/models/event_model.dart';
 import 'package:event_scheduler/screens/event_create.dart';
 import 'package:event_scheduler/screens/event_detail.dart';
-import 'package:event_scheduler/screens/get_participants.dart';
 import 'package:event_scheduler/widgets/eventcard.dart';
+import 'package:event_scheduler/widgets/eventselection.dart';
 import 'package:flutter/material.dart';
 
 class AdminDashboard extends StatefulWidget {
@@ -62,75 +62,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     }
   }
 
-  void _showEventSelectionDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        EventModel? selectedEvent;
-        return AlertDialog(
-          titleTextStyle: TextStyle(fontSize: 30,fontWeight: FontWeight.bold,color: Colors.white),
-          backgroundColor: Colors.blueGrey.shade800,
-          title: Text("Select Event"),
-          content: StatefulBuilder(
-            builder: (context, setState) {
-              return DropdownButton<EventModel>(
-                value: selectedEvent,
-                hint: Text("Choose Event"),
-                isExpanded: true,
-                items:
-                    _events.map((event) {
-                      return DropdownMenuItem(
-                        value: event,
-                        child: Text(event.title),
-                      );
-                    }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedEvent = value;
-                  });
-                },
-                borderRadius: BorderRadius.circular(15),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                ),
-                dropdownColor: Colors.blueGrey,
-              );
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text("Cancel",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (selectedEvent != null) {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => GetParticipants(event: selectedEvent!),
-                    ),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueGrey,
-                foregroundColor: Colors.white,
-        ),
-              child: Text("View Participants"),
 
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,8 +87,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
           IconButton(
             icon: const Icon(Icons.group, color: Colors.white),
             tooltip: "View Participants",
-            onPressed: () {
-              _showEventSelectionDialog();
+            onPressed: () async{
+              await showSelectEventDialog(context: context, events: _events,isUser: false);
             },
           ),
         ],
@@ -199,14 +131,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 child: Container(
                   color: Colors.blueGrey.shade900,
                   child: GridView.builder(
-                    padding: const EdgeInsets.all(16),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          childAspectRatio: 0.75,
-                        ),
+                    padding: EdgeInsets.all(16),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 0.75,
+                    ),
                     itemCount: _events.length,
                     itemBuilder: (context, index) {
                       final event = _events[index];
@@ -219,7 +150,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 ),
               )
               : Container(
-            height: double.infinity,
+                height: double.infinity,
                 width: double.infinity,
                 color: Colors.blueGrey.shade900,
                 child: Center(
