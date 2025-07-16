@@ -134,21 +134,16 @@ class _EventRegistrationState extends State<EventRegistration> {
                         keyboardType: TextInputType.emailAddress,
                       ),
                       const SizedBox(height: 16),
-                      SwitchListTile(
-                        value: isGroupEvent,
-                        title: Text(
-                          isGroupEvent
-                              ? "This is a Group-Based Event"
-                              : "This is an Individual Event",
+
+                      if (_selectedEvent?.isGroupBased == true) ...[
+                        SizedBox(height: 16),
+                        Text(
+                          "This is a Group-Based Event",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.blueGrey,
+                            color: Colors.green,
                           ),
                         ),
-                        onChanged: null,
-                      ),
-
-                      if (isGroupEvent) ...[
                         SizedBox(height: 16),
                         customTextFormField(
                           controller: _groupNameController,
@@ -161,6 +156,15 @@ class _EventRegistrationState extends State<EventRegistration> {
                           controller: _groupMembersController,
                           hintText: "Enter Group Members",
                           labelText: "Group Members",
+                        ),
+                      ] else ...[
+                        SizedBox(height: 16),
+                        Text(
+                          "This is an Individual Event",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueGrey,
+                          ),
                         ),
                       ],
                       SizedBox(height: 24),

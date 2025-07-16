@@ -88,8 +88,13 @@ class DBHelper {
         onUpgrade: (db, oldVersion, newVersion) async {
           if (oldVersion < 2) {
             await db.execute('''
-              ALTER TABLE $TABLE_NAME_1 ADD $COLUMN_IS_GROUP_BASED_1 INTEGER NOT NULL DEFAULT 0
-            ''');
+      ALTER TABLE $TABLE_NAME_1 ADD $COLUMN_IS_GROUP_BASED_1 INTEGER NOT NULL DEFAULT 0
+    ''');
+          }
+          if (oldVersion < 3) {
+            await db.execute('''
+      ALTER TABLE $TABLE_NAME_2 ADD COLUMN $COLUMN_GROUP_MEMBERS TEXT
+    ''');
           }
         },
       );
@@ -135,10 +140,15 @@ class DBHelper {
         TABLE_NAME_1,
         orderBy: '$COLUMN_DATE_1 ASC',
       );
-      final events = maps.map((map) => EventModel.fromMap({
-        ...map,
-        COLUMN_IS_GROUP_BASED_1: map[COLUMN_IS_GROUP_BASED_1] == 1,
-      })).toList();
+      final events =
+          maps
+              .map(
+                (map) => EventModel.fromMap({
+                  ...map,
+                  COLUMN_IS_GROUP_BASED_1: map[COLUMN_IS_GROUP_BASED_1] == 1,
+                }),
+              )
+              .toList();
       print("All Events: $events");
       return events;
     } catch (e) {
@@ -155,12 +165,14 @@ class DBHelper {
         where: '$COLUMN_ID_1 = ?',
         whereArgs: [id],
       );
-      final event = maps.isNotEmpty
-          ? EventModel.fromMap({
-        ...maps.first,
-        COLUMN_IS_GROUP_BASED_1: maps.first[COLUMN_IS_GROUP_BASED_1] == 1,
-      })
-          : null;
+      final event =
+          maps.isNotEmpty
+              ? EventModel.fromMap({
+                ...maps.first,
+                COLUMN_IS_GROUP_BASED_1:
+                    maps.first[COLUMN_IS_GROUP_BASED_1] == 1,
+              })
+              : null;
       print("Event by ID: $event");
       return event;
     } catch (e) {
@@ -168,6 +180,7 @@ class DBHelper {
       return null;
     }
   }
+
   Future<List<EventModel>> getGroupBasedEvents() async {
     try {
       final db = await getDB();
@@ -176,10 +189,14 @@ class DBHelper {
         where: '$COLUMN_IS_GROUP_BASED_1 = ?',
         whereArgs: [1],
       );
-      return maps.map((map) => EventModel.fromMap({
-        ...map,
-        COLUMN_IS_GROUP_BASED_1: map[COLUMN_IS_GROUP_BASED_1] == 1,
-      })).toList();
+      return maps
+          .map(
+            (map) => EventModel.fromMap({
+              ...map,
+              COLUMN_IS_GROUP_BASED_1: map[COLUMN_IS_GROUP_BASED_1] == 1,
+            }),
+          )
+          .toList();
     } catch (e) {
       print("Error fetching group-based events: $e");
       return [];
@@ -242,7 +259,7 @@ class DBHelper {
     required int eventId,
     required String email,
     required String? groupName,
-    required String? groupMembers
+    required String? groupMembers,
   }) async {
     try {
       final db = await getDB();
@@ -251,10 +268,11 @@ class DBHelper {
         print("Error: Event with ID $eventId does not exist");
         return false;
       }
-      if (event.isGroupBased && (groupMembers == null || groupMembers.isEmpty)) {
+      if (event.isGroupBased && (groupMembers == null || groupMembers.trim().isEmpty)) {
         print("Error: Group members required for group-based event");
         return false;
       }
+
       final rowsAffected = await db.insert(TABLE_NAME_2, {
         COLUMN_NAME_2: name,
         COLUMN_EVENT_ID_2: eventId,
@@ -278,7 +296,8 @@ class DBHelper {
         where: "$COLUMN_EVENT_ID_2 = ?",
         whereArgs: [eventId],
       );
-      final participants = maps.map((map) => ParticipantModel.fromMap(map)).toList();
+      final participants =
+          maps.map((map) => ParticipantModel.fromMap(map)).toList();
       print("Participants for event $eventId: $participants");
       return participants;
     } catch (e) {
@@ -287,7 +306,10 @@ class DBHelper {
     }
   }
 
-  Future<List<ParticipantModel>> getParticipantsByGroup(int eventId, String groupName) async {
+  Future<List<ParticipantModel>> getParticipantsByGroup(
+    int eventId,
+    String groupName,
+  ) async {
     try {
       final db = await getDB();
       final maps = await db.query(
@@ -295,8 +317,11 @@ class DBHelper {
         where: "$COLUMN_EVENT_ID_2 = ? AND $COLUMN_GROUP = ?",
         whereArgs: [eventId, groupName],
       );
-      final participants = maps.map((map) => ParticipantModel.fromMap(map)).toList();
-      print("Participants for event $eventId in group $groupName: $participants");
+      final participants =
+          maps.map((map) => ParticipantModel.fromMap(map)).toList();
+      print(
+        "Participants for event $eventId in group $groupName: $participants",
+      );
       return participants;
     } catch (e) {
       print("Error fetching participants by group: $e");
@@ -312,7 +337,8 @@ class DBHelper {
         where: '$COLUMN_ID_2 = ?',
         whereArgs: [id],
       );
-      final participants = map.map((map) => ParticipantModel.fromMap(map)).toList();
+      final participants =
+          map.map((map) => ParticipantModel.fromMap(map)).toList();
       final participant = participants.isNotEmpty ? participants.first : null;
       print("Participant by ID: $participant");
       return participant;
@@ -424,7 +450,8 @@ class DBHelper {
         where: '$COLUMN_EVENT_ID_3 = ?',
         whereArgs: [eventId],
       );
-      final attendance = map.map((map) => AttendanceModel.fromMap(map)).toList();
+      final attendance =
+          map.map((map) => AttendanceModel.fromMap(map)).toList();
       print("Attendance for event $eventId: $attendance");
       return attendance;
     } catch (e) {
@@ -441,7 +468,8 @@ class DBHelper {
         where: '$COLUMN_ID_3 = ?',
         whereArgs: [id],
       );
-      final attendance = map.map((map) => AttendanceModel.fromMap(map)).toList();
+      final attendance =
+          map.map((map) => AttendanceModel.fromMap(map)).toList();
       final record = attendance.isNotEmpty ? attendance.first : null;
       print("Attendance by ID: $record");
       return record;
@@ -495,16 +523,16 @@ class DBHelper {
 
   // Additional Utility Methods
   Future<bool> hasScheduleConflict(
-      String date,
-      String time,
-      String location,
-      ) async {
+    String date,
+    String time,
+    String location,
+  ) async {
     try {
       final db = await getDB();
       final result = await db.query(
         TABLE_NAME_1,
         where:
-        '$COLUMN_DATE_1 = ? AND $COLUMN_TIME_1 = ? AND $COLUMN_LOCATION_1 = ?',
+            '$COLUMN_DATE_1 = ? AND $COLUMN_TIME_1 = ? AND $COLUMN_LOCATION_1 = ?',
         whereArgs: [date, time, location],
       );
       return result.isNotEmpty;
