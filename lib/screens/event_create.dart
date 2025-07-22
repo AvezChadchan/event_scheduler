@@ -134,9 +134,9 @@ class _EventCreateState extends State<EventCreate> {
         child: Center(
           child: SingleChildScrollView(
             child: Container(
-              height: 700, // Increased height to accommodate new field
-              padding: const EdgeInsets.all(14),
-              margin: const EdgeInsets.symmetric(horizontal: 15),
+              height: 800, // Increased height to accommodate new field
+              padding:  EdgeInsets.only(top:20, left: 8, right: 8),
+              margin:  EdgeInsets.symmetric(horizontal: 7),
               decoration: BoxDecoration(
                 color: Colors.blueGrey.shade800,
                 borderRadius: BorderRadius.circular(20),
@@ -144,7 +144,7 @@ class _EventCreateState extends State<EventCreate> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     buildInputField(
                       Icons.event,
@@ -157,13 +157,8 @@ class _EventCreateState extends State<EventCreate> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 17),
-                    buildInputField(
-                      Icons.description,
-                      "Event Description",
-                      event_description_controller,
-                    ),
-                    const SizedBox(height: 17),
+                    const SizedBox(height: 30),
+
                     GestureDetector(
                       onTap: () => _pickDate(context),
                       child: AbsorbPointer(
@@ -180,7 +175,7 @@ class _EventCreateState extends State<EventCreate> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 17),
+                    const SizedBox(height: 30),
                     GestureDetector(
                       onTap: () => _pickTime(context),
                       child: AbsorbPointer(
@@ -197,7 +192,14 @@ class _EventCreateState extends State<EventCreate> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 17),
+                    const SizedBox(height: 30),
+                    buildInputField(
+                      Icons.description,
+                      "Event Description",
+                      event_description_controller,
+                      maxLines: 5
+                    ),
+                    const SizedBox(height: 30),
                     buildInputField(
                       Icons.person,
                       "Event Organizer",
@@ -209,7 +211,7 @@ class _EventCreateState extends State<EventCreate> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 17),
+                    const SizedBox(height: 30),
                     buildInputField(
                       Icons.location_city,
                       "Location",
@@ -221,15 +223,15 @@ class _EventCreateState extends State<EventCreate> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 17),
+                    const SizedBox(height: 30),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
+                         Text(
                           "Group-Based Event",
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
-                        const SizedBox(width: 10),
+                         SizedBox(width: 10),
                         Switch(
                           value: _isGroupBased,
                           onChanged: (value) {
@@ -252,7 +254,7 @@ class _EventCreateState extends State<EventCreate> {
                           ),
                         ),
                       ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
                     _isLoading
                         ? const CircularProgressIndicator(color: Colors.white)
                         : neonButton("Add Event", _saveEvent),

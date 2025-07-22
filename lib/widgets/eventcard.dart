@@ -9,39 +9,55 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        elevation: 30,
-        color: Colors.blueGrey.shade800,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Text(
-                  event.title,
-                  textAlign: TextAlign.center,
-                  softWrap: true,
-                  overflow: TextOverflow.visible,
-                  style: TextStyle(
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              SizedBox(height: 15),
-              _buildRow(Icons.calendar_month, event.date),
-              SizedBox(height: 10),
-              _buildRow(Icons.timer_sharp, event.time),
-              SizedBox(height: 10),
-              _buildRow(Icons.person, event.organizer),
-            ],
-          ),
+    return Card(
+      elevation: 5,
+      color: Colors.blueGrey.shade800,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      margin:  EdgeInsets.symmetric(horizontal: 2, vertical: 10),
+      child: Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+           Row(
+             children: [
+               Text(
+                 event.title,
+                 style: TextStyle(
+                   fontSize: 26,
+                   fontWeight: FontWeight.bold,
+                   color: Colors.white,
+                 ),
+               ),
+               Spacer(),
+               Padding(
+                 padding: const EdgeInsets.only(top: 10),
+                 child: GestureDetector(
+                   onTap: onTap,
+                   child: Card(
+                     elevation: 4,
+                     child: Container(
+                       padding: EdgeInsets.all(15),
+                       width: 150,
+                       height: 50,
+                       decoration: BoxDecoration(
+                         color: Colors.blueGrey.shade700,
+                         borderRadius: BorderRadius.circular(10),
+                       ),
+                       child: Text("View Details",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 17),),
+                     ),
+                   ),
+                 ),
+               ),
+             ],
+           ),
+            SizedBox(height: 15),
+            _buildRow(Icons.calendar_month, event.date),
+            SizedBox(height: 10),
+            _buildRow(Icons.timer_sharp, event.time),
+            SizedBox(height: 10),
+            _buildRow(Icons.person, event.organizer),
+          ],
         ),
       ),
     );

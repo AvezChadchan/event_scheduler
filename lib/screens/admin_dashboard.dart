@@ -130,14 +130,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 onRefresh: _fetchEvents,
                 child: Container(
                   color: Colors.blueGrey.shade900,
-                  child: GridView.builder(
+                  child:
+                 ListView.builder(
                     padding: EdgeInsets.all(16),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 0.75,
-                    ),
                     itemCount: _events.length,
                     itemBuilder: (context, index) {
                       final event = _events[index];
