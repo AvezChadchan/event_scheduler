@@ -70,7 +70,7 @@ class HomeScreenState extends State<HomeScreen> {
           child:
               _events.isNotEmpty
                   ? ListView.builder(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(10),
                     itemCount: _events.length,
                     itemBuilder: (context, index) {
                       final event = _events[index];
@@ -80,7 +80,21 @@ class HomeScreenState extends State<HomeScreen> {
                       );
                     },
                   )
-                  : Center(child: Text("No events found.")),
+                  : Container(
+                height: double.infinity,
+                width: double.infinity,
+                color: Colors.blueGrey.shade900,
+                child: Center(
+                  child: Text(
+                    "No Events Found!",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.blueGrey,
+                    ),
+                  ),
+                ),
+              ),
         ),
       ),
     );

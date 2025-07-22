@@ -132,7 +132,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   color: Colors.blueGrey.shade900,
                   child:
                  ListView.builder(
-                    padding: EdgeInsets.all(16),
+                    padding: EdgeInsets.all(10),
                     itemCount: _events.length,
                     itemBuilder: (context, index) {
                       final event = _events[index];
