@@ -69,15 +69,8 @@ class HomeScreenState extends State<HomeScreen> {
           onRefresh: _getEvents,
           child:
               _events.isNotEmpty
-                  ? GridView.builder(
+                  ? ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          childAspectRatio: 0.75,
-                        ),
                     itemCount: _events.length,
                     itemBuilder: (context, index) {
                       final event = _events[index];

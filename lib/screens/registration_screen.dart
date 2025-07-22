@@ -121,7 +121,16 @@ class _EventRegistrationState extends State<EventRegistration> {
                     child: ListView(
                       children: [
                         DropdownButtonFormField<EventModel>(
-                          dropdownColor: Colors.blueGrey.shade700,
+                          dropdownColor: Color(0xFF3A4E57),
+                          borderRadius: BorderRadius.circular(10),
+                          elevation: 3,
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          iconSize: 30,
+                          iconEnabledColor: Colors.blueGrey.shade800,
+                          icon: Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.white,
+                          ),
                           focusColor: Colors.white,
                           style: TextStyle(
                             fontSize: 20,
@@ -139,6 +148,7 @@ class _EventRegistrationState extends State<EventRegistration> {
                               _events.map((e) {
                                 return DropdownMenuItem<EventModel>(
                                   value: e,
+                                  alignment: Alignment.center,
                                   child: Text(e.title),
                                 );
                               }).toList(),
@@ -151,21 +161,21 @@ class _EventRegistrationState extends State<EventRegistration> {
                                       ? 'Please select an event'
                                       : null,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 25),
                         customTextFormField(
                           controller: _nameController,
                           hintText: "Enter Name",
                           labelText: "Name",
                           keyboardType: TextInputType.name,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 25),
                         customTextFormField(
                           controller: _emailController,
                           hintText: "Enter Email",
                           labelText: "Email",
                           keyboardType: TextInputType.emailAddress,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 25),
 
                         if (_selectedEvent?.isGroupBased == true) ...[
                           SizedBox(height: 16),
@@ -176,14 +186,14 @@ class _EventRegistrationState extends State<EventRegistration> {
                               color: Colors.green,
                             ),
                           ),
-                          SizedBox(height: 16),
+                          SizedBox(height: 25),
                           customTextFormField(
                             controller: _groupNameController,
                             hintText: "Enter Group Name",
                             labelText: "Group Name",
                             keyboardType: TextInputType.name,
                           ),
-                          SizedBox(height: 16),
+                          SizedBox(height: 25),
                           customTextFormField(
                             controller: _groupMembersController,
                             hintText: "Enter Group Members",
@@ -199,12 +209,15 @@ class _EventRegistrationState extends State<EventRegistration> {
                             ),
                           ),
                         ],
-                        SizedBox(height: 24),
+                        SizedBox(height: 35),
                         ElevatedButton.icon(
                           onPressed: _registerParticipant,
                           icon: Icon(Icons.check),
                           label: Text("Register"),
                           style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             backgroundColor: Colors.blueGrey.shade700,
                             foregroundColor: Colors.white,
                             textStyle: TextStyle(
@@ -245,11 +258,11 @@ class _EventRegistrationState extends State<EventRegistration> {
         hintStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
         labelStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: Colors.blueGrey.shade800, width: 3),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: Colors.blueGrey, width: 3),
         ),
       ),

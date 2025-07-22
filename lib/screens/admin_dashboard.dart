@@ -161,7 +161,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
               ),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToCreateEvent,
-        backgroundColor: Colors.blueGrey.shade300,
+        backgroundColor: Colors.blueGrey.shade700,
         child: const Icon(Icons.add, size: 35, color: Colors.white),
       ),
     );

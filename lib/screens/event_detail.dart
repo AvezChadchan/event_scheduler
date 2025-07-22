@@ -59,59 +59,55 @@ class EventDetailScreen extends StatelessWidget {
               if (isUser) ...[
                 SizedBox(height: 10),
               ] else ...[
-                Container(
+                SizedBox(
                   height: 70,
-                  width: 200,
-                  decoration: BoxDecoration(
-                    color: Colors.blueGrey.shade700,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+                  width: 400,
                   child: ElevatedButton(
-                    onPressed: () async {
-                      final confirm = showDialog<bool>(
-                        context: context,
-                        builder:
-                            (context) => AlertDialog(
-                              title: Text("Delete Event"),
-                              content: Text(
-                                "Are you sure you want to delete this event?",
+                      onPressed: () async {
+                        final confirm = showDialog<bool>(
+                          context: context,
+                          builder:
+                              (context) => AlertDialog(
+                                title: Text("Delete Event"),
+                                content: Text(
+                                  "Are you sure you want to delete this event?",
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, false),
+                                    child: Text("Cancel"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => deleteEvent(),
+                                    child: Text("Delete"),
+                                  ),
+                                ],
                               ),
-                              actions: [
-                                TextButton(
-                                  onPressed:
-                                      () => Navigator.pop(context, false),
-                                  child: Text("Cancel"),
-                                ),
-                                TextButton(
-                                  onPressed: () => deleteEvent(),
-                                  child: Text("Delete"),
-                                ),
-                              ],
-                            ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueGrey.shade700,
-                    ),
-                    child: Text(
-                      "Delete Event",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueGrey.shade800,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                        )
+                      ),
+                      child: Text(
+                        "Delete Event",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
                 ),
+
               ],
               if (isUser)
-                Container(
+                SizedBox(
                   height: 70,
-                  width: 200,
-                  decoration: BoxDecoration(
-                    color: Colors.blueGrey.shade700,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+                  width: 400,
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.push(
@@ -122,7 +118,10 @@ class EventDetailScreen extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueGrey.shade700,
+                      backgroundColor: Colors.blueGrey.shade800,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)
+                      )
                     ),
                     child: Text(
                       "Register",
@@ -143,24 +142,22 @@ class EventDetailScreen extends StatelessWidget {
 
   Widget _buildCard(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+      margin: EdgeInsets.symmetric(horizontal: 4, vertical: 10),
       child: Card(
-        color: Colors.blueGrey.shade800,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        elevation: 30,
+        color:  Color(0xFF34444C),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        elevation: 5,
         child: Padding(
-          padding: const EdgeInsets.all(18.0),
+          padding: EdgeInsets.all(10.0),
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Icon(Icons.event, size: 30, color: Colors.white),
-                  SizedBox(width: 10),
                   Text(
-                    event.title,
+                    event.title.toUpperCase(),
                     style: TextStyle(
-                      fontSize: 25,
+                      fontSize: 35,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -185,22 +182,26 @@ class EventDetailScreen extends StatelessWidget {
 
   Widget _buildDetailsCard() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10),
+      margin: EdgeInsets.symmetric(horizontal: 4, vertical: 10),
       child: Card(
-        elevation: 30,
-        color: Colors.blueGrey.shade800,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 5,
+        color: Color(0xFF34444C),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 15),
+          padding: EdgeInsets.all(10),
           child: Column(
             children: [
-              _buildDetailRow(Icons.calendar_today, event.date),
+              Divider(color: Colors.grey, thickness: 1.5),
+              _buildDetailRow(Icons.calendar_today, 'Date', event.date),
               SizedBox(height: 10),
-              _buildDetailRow(Icons.access_time, event.time),
+              Divider(color: Colors.grey, thickness: 1.5),
+              _buildDetailRow(Icons.access_time, 'Time', event.time),
               SizedBox(height: 10),
-              _buildDetailRow(Icons.location_city, event.location),
+              Divider(color: Colors.grey, thickness: 1.5),
+              _buildDetailRow(Icons.location_city, 'Location', event.location),
               SizedBox(height: 10),
-              _buildDetailRow(Icons.person, event.organizer),
+              Divider(color: Colors.grey, thickness: 1.5),
+              _buildDetailRow(Icons.person, 'Organizer', event.organizer),
             ],
           ),
         ),
@@ -208,18 +209,27 @@ class EventDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(IconData icon, String value) {
+  Widget _buildDetailRow(IconData icon, String text, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Icon(icon, size: 30, color: Colors.white),
+        Row(
+          children: [
+            Icon(icon, size: 30, color: Colors.white),
+            SizedBox(width: 5),
+            Text(
+              text,
+              style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey),
+            ),
+          ],
+        ),
         SizedBox(width: 15),
         Flexible(
           child: Text(
             value,
             style: TextStyle(
               fontSize: 22,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
             overflow: TextOverflow.ellipsis,

@@ -11,7 +11,7 @@ class EventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
-      color: Colors.blueGrey.shade800,
+      color:  Color(0xFF34444C),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       margin:  EdgeInsets.symmetric(horizontal: 2, vertical: 10),
       child: Padding(
@@ -41,7 +41,7 @@ class EventCard extends StatelessWidget {
                        width: 150,
                        height: 50,
                        decoration: BoxDecoration(
-                         color: Colors.blueGrey.shade700,
+                         color: Color(0xFF3A4E57),
                          borderRadius: BorderRadius.circular(10),
                        ),
                        child: Text("View Details",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 17),),
